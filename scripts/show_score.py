@@ -43,6 +43,25 @@ MODULES = [
 # ── Run pytest ─────────────────────────────────────────────────────────────
 
 
+def run_bonus_tests() -> tuple[int, int]:
+    """Run hidden bonus tests, return (passed, total)."""
+    workspace = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    result = subprocess.run(
+        [
+            sys.executable, "-m", "pytest",
+            "part2_competition/hidden/",
+            "-v", "--tb=no", "--no-header",
+        ],
+        capture_output=True,
+        text=True,
+        cwd=workspace,
+    )
+    output = result.stdout + result.stderr
+    passed = output.count(" PASSED")
+    failed = output.count(" FAILED")
+    return passed, passed + failed
+
+
 def run_tests() -> str:
     """Run competition tests and return combined stdout+stderr."""
     workspace = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -162,7 +181,10 @@ def divider(char: str = "─", width: int = 72) -> str:
 # ── Main display ───────────────────────────────────────────────────────────
 
 
-def display_scoreboard(passed: dict, failed: dict, coverage: int) -> None:
+def display_scoreboard(
+    passed: dict, failed: dict, coverage: int,
+    bonus_passed: int = 0, bonus_total: int = 0,
+) -> None:
     total_passed, total_tests = totals(passed, failed)
     overall_pct = total_passed / total_tests * 100 if total_tests else 0
 
@@ -203,10 +225,24 @@ def display_scoreboard(passed: dict, failed: dict, coverage: int) -> None:
     cov_value = color(f"{coverage}%", CYAN if coverage >= 70 else YELLOW)
     print(f"  {cov_label:<31}  {color(str(coverage)+'%', BOLD):>5}  {cov_bar}  {cov_value}")
 
+    # ── Bonus score ──
+    if bonus_total > 0:
+        print(divider("─"))
+        bonus_bar = progress_bar(bonus_passed, bonus_total, width=18)
+        bonus_frac = f"{bonus_passed}/{bonus_total}"
+        bonus_icon = color("✔ DONE", GREEN, BOLD) if bonus_passed == bonus_total else color("? HIDDEN", MAGENTA)
+        print(
+            f"  {color('BONUS (hidden tests)', BOLD):<31}  {color(bonus_frac, MAGENTA, BOLD):>5}"
+            f"  {bonus_bar}  {bonus_icon}"
+        )
+
     # ── Motivational footer ──
     print()
-    if total_passed == total_tests:
+    perfect = total_passed == total_tests and (bonus_total == 0 or bonus_passed == bonus_total)
+    if perfect:
         print(color("  🏆  All tests passing! Outstanding work! 🏆", GREEN, BOLD))
+    elif total_passed == total_tests and bonus_passed < bonus_total:
+        print(color("  So close! All visible tests pass — can you crack the hidden bonus too?", MAGENTA, BOLD))
     elif total_passed >= total_tests * 0.75:
         remaining = total_tests - total_passed
         print(color(f"  Almost there! Only {remaining} test(s) left — you've got this!", YELLOW))
@@ -250,7 +286,8 @@ def main() -> None:
     print(color("  Running tests...", DIM), end="\r", flush=True)
     output = run_tests()
     passed, failed, coverage = parse_results(output)
-    display_scoreboard(passed, failed, coverage)
+    bonus_passed, bonus_total = run_bonus_tests()
+    display_scoreboard(passed, failed, coverage, bonus_passed, bonus_total)
     show_failing_hints(output)
 
 

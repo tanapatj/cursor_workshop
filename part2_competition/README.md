@@ -4,9 +4,13 @@
 
 1. **You may only edit files inside `part2_competition/src/`** — do not modify the test files
 2. There are **16 hidden bugs** — 4 in each source module
-3. **Score = number of passing tests** (max 16)
+3. **Score = number of passing tests** (max 16 + 2 bonus)
 4. Check your score at any time with `make score`
 5. Highest score wins! Tiebreaker: earliest time all bugs are fixed
+
+> **Bonus:** There are 2 extra hidden tests that aren't shown here.
+> They test edge cases beyond the visible tests — a correct fix will handle them naturally.
+> Getting 16/16 is good. Getting 18/18 means you truly understood the code.
 
 ---
 
