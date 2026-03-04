@@ -45,5 +45,5 @@ Some tests will **fail**. This is expected — the failures reveal the bugs!
 
 Select the failing test output, open Cursor Chat, and ask:
 
-> *"Please explain and write unit tests"*
+> *"Look at part1_demo/calculator.py and write a comprehensive test suite that covers normal cases, edge cases, and potential error conditions."*
 
