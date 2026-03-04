@@ -41,31 +41,9 @@ make test-part1
 
 Some tests will **fail**. This is expected — the failures reveal the bugs!
 
-### Step 3 — Ask Cursor to explain the failures
+### Step 3 — Ask Cursor to create test
 
 Select the failing test output, open Cursor Chat, and ask:
 
-> *"These tests are failing. Can you look at the implementation in calculator.py and explain what's wrong?"*
+> *"Please explain and write unit tests"*
 
-### Step 4 — Fix the bugs
-
-Use `Cmd+K` (inline edit) on the buggy line and ask Cursor to fix it.
-
-After each fix, run `make test-part1` again to verify.
-
-### Step 5 — All green ✅
-
-Once all 3 bugs are fixed, all tests pass. Recap what Cursor helped with:
-- Writing tests from scratch in seconds
-- Reading test failures to pinpoint root causes
-- Suggesting targeted fixes
-
----
-
-## Bugs Reference (for facilitator only — don't share with audience!)
-
-| Function | Bug | Fix |
-|----------|-----|-----|
-| `divide` | Uses integer division `//` | Change to `/` |
-| `power` | Uses multiplication `*` instead of `**` | Change to `**` |
-| `percentage` | Missing `* 100` | Add `* 100` |
